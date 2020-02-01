@@ -1,0 +1,11 @@
+{
+  "name": "mchacks-2020",
+  "version": "1.0.0",
+  "description": "Dependencies for MediDate",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Allen",
+  "license": "ISC"
+}
