@@ -10,6 +10,12 @@
     color: rgb(243, 251, 254);
 }
 
+.button{
+    color: rgb(89, 204, 242);
+    padding: 0;
+    border: none;
+    background: none;
+}
 .head-color {
     color: rgb(243, 251, 254)
 }
@@ -18,7 +24,6 @@
     border: black;
     border-width: 1px;
 }
-
 .notice {
     padding: 10px;
     background-color: #fafafa;
