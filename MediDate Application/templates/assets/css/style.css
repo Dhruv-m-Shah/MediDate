@@ -10,6 +10,34 @@
     color: rgb(243, 251, 254);
 }
 
+
+.border_white {
+    color: rgb(243, 251, 254);
+}
+
+.location{
+    padding-top: 15px;
+}
+
+.btn-position{
+    border-color: rgb(89, 204, 242);
+    padding-top: 25px;
+}
 .head-color {
     color: rgb(243, 251, 254)
+}
+
+.box-border {
+    border: black;
+    border-width: 1px;
+    padding-left: 0px;
+}
+
+.notifications-header{
+    padding-bottom: 10px;
+}
+
+.information{
+    padding-left: 0px;
+    padding-top: 10px;
 }

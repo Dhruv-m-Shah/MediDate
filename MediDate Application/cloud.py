@@ -9,12 +9,14 @@ import time
 import asyncio
 from multiprocessing import Process, Queue
 
+from twilio.rest import Client
+
 import threading
 # MediDate Google Cloud Vision Applicaiton
 
 app = Flask(__name__)
 q = Queue()
-
+run = 0
 def foreground():
     d = {}
     arr = []
@@ -25,13 +27,17 @@ def foreground():
     def index():
         return render_template('index.html')
 
-    @app.route('/newPrescription', methods=['POST'])
+    @app.route('/newPrescription', methods=['GET'])
     def newPrescription():
+        global run
         arr = q.get()
         print(arr)
-        d["Morning"] = arr[0][0]
-        d["Noon"] = arr[0][1]
-        d["Evening"] = arr[0][2]
+        d["MorningClick"] = arr[0][0]
+        d["NoonClick"] = arr[0][1]
+        d["EveningClick"] = arr[0][2]
+        if(((d["Qty"] - arr[0][0]*d["Morning"] - arr[0][1]*d["Noon"] - arr[0][2]*d["Evening"]) <= 10) and (run == 0)):
+            twilio_send(d["Name"])
+            run = run+1
         return jsonify({'data': d})
     
     
@@ -54,7 +60,8 @@ def detect_text(path):
 
     response = client.text_detection(image=image)
     texts = response.text_annotations
-    d = {"Name": "Advil", "Fill Date": 0, "RX": 0, "Qty": 90, "date-to-take": 0, "Morning": 2, "Noon": 3,"Evening": 2}
+    
+    d = {"Name": "Advil", "Fill Date": 0, "RX": 0, "Qty": 90, "date-to-take": 0, "Morning": 1, "Noon": 3,"Evening": 2, "MorningClick": 0, "NoonClick": 0, "EveningClick": 0}
     count = 0
     for text in texts:
         if(text.description == "Rx" or text.description == "Rx#" or text.description == "#" or text.description == "Rx:" or text.description == "Rx:#" or text.description == "Rx: #" or text.description == ":"):
@@ -79,16 +86,30 @@ def detect_text(path):
                 response.error.message))
         
 
+def twilio_send(name):
+
+    account_sid = 'ACd6b176bf94cfd75b60a1ae33f783dbbc'
+    auth_token = '5854b6dec1a8b84a8b30708aaef899e3'
+    client = Client(account_sid, auth_token)
+
+    message = client.messages \
+                    .create(
+                            body="Hey there! A customer from your pharmacy is running low on "+ name + " medication and needs more. When the order is ready for pick up, send us a text!",
+                            from_='+14692084179',
+                            to='+14167069819'
+                            )
+
+    print(message.sid)
         
 
 
 def background():
     while(True):
-        with open('text4.txt', 'r') as f:
+        with open('text12.txt', 'r') as f:
             lines = f.read().splitlines()
             last_line = lines[-1]
             q.put([list(map(int, last_line.split()))])
-            time.sleep(1)
+            time.sleep(3)
         
 f = threading.Thread(name='foreground', target=foreground)
 b = threading.Thread(name = 'background', target = background)
