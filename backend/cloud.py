@@ -18,6 +18,10 @@ def index():
 def newPrescription():
     return jsonify({'data': d})
 
+@app.route("/notifications")  
+def notifications():
+    return render_template('notifications.html')
+
 if __name__ == '__main__':
    app.run(debug=True)
     
