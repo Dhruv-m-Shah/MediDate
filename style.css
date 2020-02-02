@@ -17,4 +17,17 @@
 .box-border {
     border: black;
     border-width: 1px;
+    padding-left: 0px;
 }
+
+.notifications-header{
+    padding-bottom: 10px;
+}
+
+.information{
+    padding-left: 0px;
+    padding-top: 10px;
+}
+
+
+
