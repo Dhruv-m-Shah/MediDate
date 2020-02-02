@@ -6,10 +6,15 @@
     color: rgb(89, 204, 242);
 }
 
-.border-color {
+.border_white {
     color: rgb(243, 251, 254);
 }
 
 .head-color {
     color: rgb(243, 251, 254)
+}
+
+.box-border {
+    border: black;
+    border-width: 1px;
 }
