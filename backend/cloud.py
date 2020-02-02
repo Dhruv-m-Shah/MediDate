@@ -5,26 +5,38 @@ Created on Sat Feb  1 11:24:44 2020
 @author: shahd
 """
 from flask import Flask, request, jsonify, render_template
+import time
+import asyncio
+from multiprocessing import Process, Queue
+
+import threading
 # MediDate Google Cloud Vision Applicaiton
 
 app = Flask(__name__)
+q = Queue()
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+def foreground():
+    d = {}
+    arr = []
+    arr = q.get()
+    print(arr)
+    d = detect_text(r'C:\Users\shahd\OneDrive\Desktop\MediDate Application\label.jpg')
+    @app.route('/')
+    def index():
+        return render_template('index.html')
 
 
-@app.route('/newPrescription', methods=['POST'])
-def newPrescription():
-    return jsonify({'data': d})
+    @app.route('/newPrescription', methods=['POST'])
+    def newPrescription():
+        arr = q.get()
+        print(arr)
+        return jsonify({'data': d})
 
-@app.route("/notifications")  
-def notifications():
-    return render_template('notifications.html')
-
-if __name__ == '__main__':
-   app.run(debug=True)
     
+    
+    if __name__ == '__main__':
+       app.run(debug=True)
+       
 def detect_text(path):
     """Detects text in the file."""
     from google.cloud import vision
@@ -41,11 +53,9 @@ def detect_text(path):
 
     response = client.text_detection(image=image)
     texts = response.text_annotations
-    print('Texts:')
-    d = {"Name": 0, "Fill Date": 0, "RX": 0, "Qty": 90, "date-to-take": 0}
+    d = {"Name": 0, "Fill Date": 0, "RX": 0, "Qty": 90, "date-to-take": 0, "Red": 0, "Blue": 0,"Green": 0}
     count = 0
     for text in texts:
-        print('\n"{}"'.format(text.description))
         if(text.description == "Rx" or text.description == "Rx#" or text.description == "#" or text.description == "Rx:" or text.description == "Rx:#" or text.description == "Rx: #" or text.description == ":"):
             count = 1
             continue
@@ -53,7 +63,6 @@ def detect_text(path):
             d["Qty"] = text.description[3:len(text.description)-1]
             
         if(count == 1):
-            print(text.description)
             d["RX"] = text.description
             count = 0
         vertices = (['({},{})'.format(vertex.x, vertex.y)
@@ -68,5 +77,20 @@ def detect_text(path):
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
         
-d = {}  
-d = detect_text(r'C:\Users\shahd\OneDrive\Desktop\MediDate Application\label.jpg') # location of file.
+
+        
+
+
+def background():
+    while(True):
+        with open('text3.txt', 'r') as f:
+            lines = f.read().splitlines()
+            last_line = lines[-1]
+            q.put([list(map(int, last_line.split()))])
+            time.sleep(1)
+        
+f = threading.Thread(name='foreground', target=foreground)
+b = threading.Thread(name = 'background', target = background)
+f.start()
+b.start()
+
