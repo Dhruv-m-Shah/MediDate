@@ -16,21 +16,21 @@ function update_pills() {
             current_m = document.getElementById("morning").innerHTML;
             new_d = `\n${drug.Name} to have: ${drug.Red}`
 
-            document.getElementById("morning").innerHTML = current_m.concat(current_m, new_d);
+            document.getElementById("morning").innerHTML = current_m.concat(current_m, "\n", new_d);
         }
 
         if (drug.Green != 0) { // CHANGE "GREEN" VAR NAME
             current_a = document.getElementById("afternoon").innerHTML;
             new_d = `\n${drug.Name} to have: ${drug.Green}`
 
-            document.getElementById("afternoon").innerHTML = current_a.concat(current_a, new_d);
+            document.getElementById("afternoon").innerHTML = current_a.concat(current_a, "\n", new_d);
         }
 
         if (drug.Blue != 0) { // CHANGE "BLUE" VAR NAME
             current_e = document.getElementById("evening").innerHTML;
             new_d = `\n${drug.Name} to have: ${drug.Blue}`
             
-            document.getElementById("evening").innerHTML = current_e.concat(current_e, new_d);
+            document.getElementById("evening").innerHTML = current_e.concat(current_e, "\n", new_d);
         }
     }
 
